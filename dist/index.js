@@ -1,4 +1,4 @@
-import { Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
+// import { Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
 document.body.onload = () => {
     const HTML_READER_ELEMENT_ID = 'reader';
     const HTML_OUTPUT_ELEMENT_ID = 'output';
