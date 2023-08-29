@@ -1,34 +1,58 @@
-import { Html5Qrcode } from "html5-qrcode";
+import { CameraDevice, Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
 
 document.body.onload = () => {
     const HTML_READER_ELEMENT_ID = 'reader';
     const HTML_OUTPUT_ELEMENT_ID = 'output';
+    const HTML_CAM_ELEMENT_ID = 'cam-change'
 
-    const output_elem: HTMLElement = document.getElementById(HTML_OUTPUT_ELEMENT_ID) as HTMLElement;
+    const output_elem: HTMLInputElement = document.getElementById(HTML_OUTPUT_ELEMENT_ID) as HTMLInputElement;
+    const cam_elem: HTMLButtonElement = document.getElementById(HTML_CAM_ELEMENT_ID) as HTMLButtonElement;
 
     var camId = '';
+    var cameras: CameraDevice[] = [];
+    var currentCam = -1;
     Html5Qrcode.getCameras().then(devices => {
         if (devices && devices.length) {
-            camId = devices[0].id;
+            for (let device of devices) {
+                cameras.push(device);
+            }
+
             const html5QrCode = new Html5Qrcode(HTML_READER_ELEMENT_ID);
-            html5QrCode.start(
-                camId,
-                {
-                    fps: 10,
-                    qrbox: {width: 250, height: 250}
-                },
-                (decodedText, decodedResult) => {
-                    // console.log(decodedText);
-                    (output_elem as any).value = decodedText;
-                },
-                (errorMessage) => {
-                    if (errorMessage.indexOf('No MultiFormat Readers were able to detect the code.') < 0) {
-                        console.error(errorMessage);
-                    }
+
+            cam_elem.onclick = () => {
+                currentCam += 1;
+                if (currentCam > cameras.length - 1) {
+                    currentCam = 0;
                 }
-            ).catch((err) => {
-                console.error(err);
-            })
+                camId = cameras[currentCam].id;
+
+                var canContinue = true;
+                if (html5QrCode.getState() == Html5QrcodeScannerState.SCANNING) {
+                    canContinue = false;
+                    html5QrCode.stop().then(() => canContinue = true).catch((err) => console.error(err));
+                }
+                while (!canContinue) {}
+
+                html5QrCode.start(
+                    camId,
+                    {
+                        fps: 10,
+                        qrbox: {width: 250, height: 250}
+                    },
+                    (decodedText, decodedResult) => {
+                        // console.log(decodedText);
+                        output_elem.value = decodedText;
+                    },
+                    (errorMessage) => {
+                        if (errorMessage.indexOf('No MultiFormat Readers were able to detect the code.') < 0) {
+                            console.error(errorMessage);
+                        }
+                    }
+                ).catch((err) => {
+                    console.error(err);
+                });
+            }
+
         }
     }).catch(err => console.error(err));
 }
