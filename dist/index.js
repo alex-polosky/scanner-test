@@ -1,4 +1,4 @@
-import { Html5Qrcode } from "html5-qrcode";
+// import { Html5Qrcode } from "html5-qrcode";
 const HTML_ELEMENT_ID = 'reader';
 var camId = '';
 document.body.onload = () => {
