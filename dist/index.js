@@ -39,6 +39,8 @@ document.body.onload = () => {
                         qrbox: { width: 250, height: 250 }
                     }, (decodedText, decodedResult) => {
                         // console.log(decodedText);
+                        const data = parseBarcode(decodedText);
+                        console.log(data);
                         output_elem.value = decodedText;
                     }, (errorMessage) => {
                         if (errorMessage.indexOf('No MultiFormat Readers were able to detect the code.') < 0) {

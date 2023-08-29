@@ -1,5 +1,16 @@
 import { CameraDevice, Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
 
+declare function parseBarcode(s: string): {
+    codeName: string;
+    parsedCodeItems: {
+        ai: string;
+        title: string;
+        data: string;
+        unit: string
+    }[];
+}
+
+
 document.body.onload = () => {
     const HTML_READER_ELEMENT_ID = 'reader';
     const HTML_OUTPUT_ELEMENT_ID = 'output';
@@ -53,6 +64,8 @@ document.body.onload = () => {
                         },
                         (decodedText, decodedResult) => {
                             // console.log(decodedText);
+                            const data = parseBarcode(decodedText);
+                            console.log(data);
                             output_elem.value = decodedText;
                         },
                         (errorMessage) => {
