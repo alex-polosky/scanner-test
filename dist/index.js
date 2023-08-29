@@ -23,23 +23,34 @@ document.body.onload = () => {
                 var canContinue = true;
                 if (html5QrCode.getState() == Html5QrcodeScannerState.SCANNING) {
                     canContinue = false;
-                    html5QrCode.stop().then(() => canContinue = true).catch((err) => console.error(err));
+                    html5QrCode.stop().then(() => {
+                        canContinue = true;
+                    }).catch((err) => {
+                        console.error(err);
+                    });
                 }
-                while (!canContinue) { }
-                html5QrCode.start(camId, {
-                    fps: 10,
-                    qrbox: { width: 250, height: 250 }
-                }, (decodedText, decodedResult) => {
-                    // console.log(decodedText);
-                    output_elem.value = decodedText;
-                }, (errorMessage) => {
-                    if (errorMessage.indexOf('No MultiFormat Readers were able to detect the code.') < 0) {
-                        console.error(errorMessage);
+                const startCode = () => {
+                    if (!canContinue) {
+                        setTimeout(() => startCode(), 150);
+                        return;
                     }
-                }).catch((err) => {
-                    console.error(err);
-                });
+                    html5QrCode.start(camId, {
+                        fps: 10,
+                        qrbox: { width: 250, height: 250 }
+                    }, (decodedText, decodedResult) => {
+                        // console.log(decodedText);
+                        output_elem.value = decodedText;
+                    }, (errorMessage) => {
+                        if (errorMessage.indexOf('No MultiFormat Readers were able to detect the code.') < 0) {
+                            console.error(errorMessage);
+                        }
+                    }).catch((err) => {
+                        console.error(err);
+                    });
+                };
+                startCode();
             };
+            cam_elem.click();
         }
     }).catch(err => console.error(err));
 };
