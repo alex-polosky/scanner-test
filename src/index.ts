@@ -1,13 +1,14 @@
 import { CameraDevice, Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
 
+type CodeItem = {
+    ai: string;
+    title: string;
+    data: string;
+    unit: string
+};
 declare function parseBarcode(s: string): {
     codeName: string;
-    parsedCodeItems: {
-        ai: string;
-        title: string;
-        data: string;
-        unit: string
-    }[];
+    parsedCodeItems: CodeItem[];
 }
 
 
@@ -63,10 +64,20 @@ document.body.onload = () => {
                             qrbox: {width: 250, height: 250}
                         },
                         (decodedText, decodedResult) => {
-                            // console.log(decodedText);
+                            const markCode = '\u001d';
+                            while (decodedText.indexOf(markCode) > -1) {
+                                decodedText = decodedText.replace(markCode, '');
+                            }
+
                             const data = parseBarcode(decodedText);
                             console.log(data);
-                            output_elem.value = decodedText;
+
+                            var out = '';
+                            const codeItems: CodeItem[] = data.parsedCodeItems;
+                            for (let each of codeItems) {
+                                out += each.ai + ': ' + each.data + ';';
+                            }
+                            output_elem.value = out;
                         },
                         (errorMessage) => {
                             if (errorMessage.indexOf('No MultiFormat Readers were able to detect the code.') < 0) {
