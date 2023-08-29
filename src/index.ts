@@ -1,7 +1,7 @@
 import { Html5Qrcode } from "html5-qrcode";
 
 const HTML_ELEMENT_ID = 'reader';
-var camId = null;
+var camId = '';
 Html5Qrcode.getCameras().then(devices => {
     if (devices && devices.length) {
         camId = devices[0].id;

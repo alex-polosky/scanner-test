@@ -4,8 +4,19 @@
       "noEmitOnError": true,
       "removeComments": false,
       "sourceMap": true,
-      "target": "es5",
-      "outDir": "dist"
+      // "target": "es5",
+      "outDir": "dist",
+      "target": "es6",
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "module": "ESNext",
+      "moduleResolution": "node",
+      "lib": ["ES2016", "ESNext", "DOM"],
+      "strict": true,
+      "strictNullChecks": true,
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "declaration": true
     },
     "include": [
       "src/**/*"
